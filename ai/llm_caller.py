@@ -11,13 +11,14 @@ from google.genai.types import Content, GenerateContentConfig, SafetySetting, Ha
 APP_NAME = os.getenv("AGENT_APP_NAME", "Sladk_App")
 AGENT_NAME = os.getenv("AGENT_NAME", "Sladk_AI_Agent")
 AGENT_MODEL = os.getenv("AGENT_MODEL", "gemini-2.5-flash-preview-09-2025")
-DEFAULT_SYSTEM_INSTRUCTION = """
-You're an assistant in a Slack workspace.
+DEFAULT_SYSTEM_INSTRUCTION = os.getenv(
+    "DEFAULT_SYSTEM_INSTRUCTION",
+    """You're an assistant in a Slack workspace.
 Users in the workspace will ask you to help them write something or to think better about a specific topic.
 You'll respond to those questions in a professional way.
 When you include markdown text, convert them to Slack compatible ones.
-When a prompt has Slack's special syntax like <@USER_ID> or <#CHANNEL_ID>, you must keep them as-is in your response.
-"""
+When a prompt has Slack's special syntax like <@USER_ID> or <#CHANNEL_ID>, you must keep them as-is in your response.""",
+)
 
 
 # Global services
