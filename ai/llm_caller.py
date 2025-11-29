@@ -6,7 +6,7 @@ from google.adk.sessions import InMemorySessionService
 from google.adk.agents import LlmAgent
 from google.adk.runners import Runner
 from google.genai.types import Content, GenerateContentConfig, SafetySetting, HarmCategory, HarmBlockThreshold, Part
-
+from ai.tools.custom_tools import get_weather
 
 APP_NAME = os.getenv("AGENT_APP_NAME", "Sladk_App")
 AGENT_NAME = os.getenv("AGENT_NAME", "Sladk_AI_Agent")
@@ -46,6 +46,7 @@ async def call_llm(
                 )
             ],
         ),
+        tools=[get_weather],
     )
 
     app = App(
