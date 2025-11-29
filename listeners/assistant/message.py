@@ -1,21 +1,21 @@
 from logging import Logger
 from typing import Dict, List
 
-from slack_bolt import BoltContext, Say, SetStatus
-from slack_sdk import WebClient
+from slack_bolt.async_app import AsyncBoltContext, AsyncSay, AsyncSetStatus
+from slack_sdk.web.async_client import AsyncWebClient
 
 from ai.llm_caller import call_llm
 
 from ..views.feedback_block import create_feedback_block
 
 
-def message(
-    client: WebClient,
-    context: BoltContext,
+async def message(
+    client: AsyncWebClient,
+    context: AsyncBoltContext,
     logger: Logger,
     payload: dict,
-    say: Say,
-    set_status: SetStatus,
+    say: AsyncSay,
+    set_status: AsyncSetStatus,
 ):
     """
     Handles when users send messages or select a prompt in an assistant thread and generate AI responses:
@@ -34,7 +34,7 @@ def message(
         thread_ts = payload["thread_ts"]
         user_id = context.user_id
 
-        set_status(
+        await set_status(
             status="thinking...",
             loading_messages=[
                 "Teaching the hamsters to type faster…",
@@ -45,37 +45,35 @@ def message(
             ],
         )
 
-        replies = client.conversations_replies(
+        replies = await client.conversations_replies(
             channel=context.channel_id,
             ts=context.thread_ts,
             oldest=context.thread_ts,
             limit=10,
         )
         messages_in_thread: List[Dict[str, str]] = []
-        for message in replies["messages"]:
-            role = "user" if message.get("bot_id") is None else "assistant"
-            messages_in_thread.append({"role": role, "content": message["text"]})
+        for msg in replies["messages"]:
+            role = "user" if msg.get("bot_id") is None else "assistant"
+            messages_in_thread.append({"role": role, "content": msg["text"]})
 
-        returned_message = call_llm(messages_in_thread)
-
-        streamer = client.chat_stream(
+        streamer = await client.chat_stream(
             channel=channel_id,
             recipient_team_id=team_id,
             recipient_user_id=user_id,
             thread_ts=thread_ts,
         )
 
-        # Loop over OpenAI response stream
-        # https://platform.openai.com/docs/api-reference/responses/create
-        for event in returned_message:
-            if event.type == "response.output_text.delta":
-                streamer.append(markdown_text=f"{event.delta}")
-            else:
-                continue
+        # Loop over streaming response from LLM
+        async for text_chunk in call_llm(
+            messages_in_thread,
+            user_id=user_id,
+            session_id=thread_ts
+        ):
+            await streamer.append(markdown_text=text_chunk)
 
         feedback_block = create_feedback_block()
-        streamer.stop(blocks=feedback_block)
+        await streamer.stop(blocks=feedback_block)
 
     except Exception as e:
         logger.exception(f"Failed to handle a user message event: {e}")
-        say(f":warning: Something went wrong! ({e})")
+        await say(f":warning: Something went wrong! ({e})")

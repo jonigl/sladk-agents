@@ -1,12 +1,12 @@
 from logging import Logger
 from typing import Dict, List
 
-from slack_bolt import Say, SetSuggestedPrompts
+from slack_bolt.async_app import AsyncSay, AsyncSetSuggestedPrompts
 
 
-def assistant_thread_started(
-    say: Say,
-    set_suggested_prompts: SetSuggestedPrompts,
+async def assistant_thread_started(
+    say: AsyncSay,
+    set_suggested_prompts: AsyncSetSuggestedPrompts,
     logger: Logger,
 ):
     """
@@ -18,7 +18,7 @@ def assistant_thread_started(
         logger: Logger instance for error tracking
     """
     try:
-        say("How can I help you?")
+        await say("How can I help you?")
 
         prompts: List[Dict[str, str]] = [
             {
@@ -35,7 +35,7 @@ def assistant_thread_started(
             },
         ]
 
-        set_suggested_prompts(prompts=prompts)
+        await set_suggested_prompts(prompts=prompts)
     except Exception as e:
-        logger.exception(f"Failed to handle an assistant_thread_started event: {e}", e)
-        say(f":warning: Something went wrong! ({e})")
+        logger.exception(f"Failed to handle an assistant_thread_started event: {e}")
+        await say(f":warning: Something went wrong! ({e})")

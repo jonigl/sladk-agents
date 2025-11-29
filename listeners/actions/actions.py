@@ -1,10 +1,10 @@
 from logging import Logger
 
-from slack_bolt import Ack
-from slack_sdk import WebClient
+from slack_bolt.async_app import AsyncAck
+from slack_sdk.web.async_client import AsyncWebClient
 
 
-def handle_feedback(ack: Ack, body: dict, client: WebClient, logger: Logger):
+async def handle_feedback(ack: AsyncAck, body: dict, client: AsyncWebClient, logger: Logger):
     """
     Handles user feedback on AI-generated responses via thumbs up/down buttons.
 
@@ -15,21 +15,21 @@ def handle_feedback(ack: Ack, body: dict, client: WebClient, logger: Logger):
         logger: Logger instance for debugging and error tracking
     """
     try:
-        ack()
+        await ack()
         message_ts = body["message"]["ts"]
         channel_id = body["channel"]["id"]
         feedback_type = body["actions"][0]["value"]
         is_positive = feedback_type == "good-feedback"
 
         if is_positive:
-            client.chat_postEphemeral(
+            await client.chat_postEphemeral(
                 channel=channel_id,
                 user=body["user"]["id"],
                 thread_ts=message_ts,
                 text="We're glad you found this useful.",
             )
         else:
-            client.chat_postEphemeral(
+            await client.chat_postEphemeral(
                 channel=channel_id,
                 user=body["user"]["id"],
                 thread_ts=message_ts,
