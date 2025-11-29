@@ -1,6 +1,7 @@
 {
   "display_information": {
-    "name": "Bolt Python AI Agent"
+    "name": "Sladk AI Agent",
+    "description": "An AI agent that helps with various tasks using Slack and Google ADK."
   },
   "features": {
     "app_home": {
@@ -9,11 +10,11 @@
       "messages_tab_read_only_enabled": false
     },
     "bot_user": {
-      "display_name": "Bolt Python AI Agent",
+      "display_name": "Sladk AI Agent",
       "always_online": false
     },
     "assistant_view": {
-      "assistant_description": "Hi, I am an agent built using Bolt for Python. I am here to help you out!",
+      "assistant_description": "Hi, I am an agent built using Bolt and Google ADK for Python. I am here to help you out!",
       "suggested_prompts": []
     }
   },
