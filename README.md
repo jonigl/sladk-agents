@@ -15,7 +15,6 @@
 - [💡 The Solution](#-the-solution)
 - [🏗️ Architecture](#️-architecture)
 - [✨ Key Features Implemented (ADK Concepts)](#-key-features-implemented-adk-concepts)
-- [📁 Project Structure](#-project-structure)
 - [🚀 Setup & Installation](#-setup--installation)
 - [🎮 Usage](#-usage)
 - [🖥️ Demos](#️-demos)
@@ -157,35 +156,6 @@ This project demonstrates **5 key concepts** from the Google ADK course:
 - **Safety Settings**: Configurable content filtering
 - **Streaming**: Real-time response streaming to Slack
 
----
-
-## 📁 Project Structure
-
-```
-sladk-agents/
-├── app.py                    # Entry point - AsyncApp with Socket Mode
-├── app_oauth.py              # OAuth configuration for multi-workspace deployment
-├── manifest.json             # Slack app manifest configuration
-├── requirements.txt          # Python dependencies
-├── .env.sample               # Environment variables template
-│
-├── ai/
-│   ├── llm_caller.py         # Core ADK integration: agents, tools, sessions
-│   └── tools/
-│       └── custom_tools.py   # Custom tool implementations (get_weather)
-│
-└── listeners/
-    ├── __init__.py           # Listener registration
-    ├── assistant/
-    │   ├── assistant_thread_started.py  # Handle new assistant threads
-    │   └── message.py                   # Process user messages
-    ├── events/
-    │   └── app_mentioned.py  # Handle @mentions in channels
-    ├── actions/
-    │   └── actions.py        # Handle feedback buttons
-    └── views/
-        └── feedback_block.py # Feedback UI components
-```
 
 ## 🚀 Setup & Installation
 
