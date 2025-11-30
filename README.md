@@ -18,6 +18,7 @@
 - [📁 Project Structure](#-project-structure)
 - [🚀 Setup & Installation](#-setup--installation)
 - [🎮 Usage](#-usage)
+- [🖥️ Demos](#-demos)
 - [🔧 Extending the Agent](#-extending-the-agent)
 - [📊 Impact & Value](#-impact--value)
 - [🛣️ Future Roadmap](#️-future-roadmap)
@@ -267,6 +268,8 @@ slack run
 2. Go to **Navigation** → Go to the **App agents & assistants**
 3. Click the checkbox for **Show app agents**
 
+<video src="https://github.com/user-attachments/assets/3e2ccd42-95b3-4e54-9687-0129ffe29a26" width="640" controls></video>
+
 ### Interact with the Agent
 
 Once running, interact with your agent in three ways:
@@ -283,7 +286,21 @@ Once running, interact with your agent in three ways:
 - *"Calculate the compound interest on $1000 at 5% for 10 years"* → Uses CodeAgent
 - *"What's the weather in San Francisco?"* → Uses custom get_weather tool
 
----
+## Demos
+
+### Demo 1
+
+- Using google search built-in with ToolAgent / subagent
+- Using a custom tool to get the weather
+- Interacting with slack thread messages and mentions
+
+<video src="https://github.com/user-attachments/assets/80def011-080a-4673-97f8-1ecd5f84e45d" width="640" controls></video>
+
+### Demo 2
+
+- Python code execution using dedicated subagent as a tool
+
+<video src="https://github.com/user-attachments/assets/287b5c93-624a-4cc3-9b3a-8f6cd0d43d97" width="640" controls></video>
 
 ## 🔧 Extending the Agent
 
