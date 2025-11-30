@@ -65,9 +65,7 @@ async def message(
 
         # Loop over streaming response from LLM
         async for text_chunk in call_llm(
-            messages_in_thread,
-            user_id=user_id,
-            session_id=thread_ts
+            messages_in_thread, user_id=user_id, session_id=thread_ts
         ):
             await streamer.append(markdown_text=text_chunk)
 

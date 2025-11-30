@@ -4,7 +4,9 @@ from slack_bolt.async_app import AsyncAck
 from slack_sdk.web.async_client import AsyncWebClient
 
 
-async def handle_feedback(ack: AsyncAck, body: dict, client: AsyncWebClient, logger: Logger):
+async def handle_feedback(
+    ack: AsyncAck, body: dict, client: AsyncWebClient, logger: Logger
+):
     """
     Handles user feedback on AI-generated responses via thumbs up/down buttons.
 

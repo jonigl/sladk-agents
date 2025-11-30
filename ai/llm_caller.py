@@ -8,7 +8,14 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.adk.tools import google_search
 from google.adk.tools.agent_tool import AgentTool
-from google.genai.types import Content, GenerateContentConfig, SafetySetting, HarmCategory, HarmBlockThreshold, Part
+from google.genai.types import (
+    Content,
+    GenerateContentConfig,
+    SafetySetting,
+    HarmCategory,
+    HarmBlockThreshold,
+    Part,
+)
 from ai.tools.custom_tools import get_weather
 
 APP_NAME = os.getenv("AGENT_APP_NAME", "Sladk_App")
@@ -37,14 +44,14 @@ async def call_llm(
     """Call the LLM and yield text chunks asynchronously."""
     search_agent = Agent(
         model=AGENT_MODEL,
-        name='SearchAgent',
+        name="SearchAgent",
         instruction="You're a specialist in Google Search",
         tools=[google_search],
     )
 
     coding_agent = Agent(
         model=AGENT_MODEL,
-        name='CodeAgent',
+        name="CodeAgent",
         instruction="You're a specialist in Code Execution",
         code_executor=BuiltInCodeExecutor(),
     )
@@ -62,7 +69,11 @@ async def call_llm(
                 )
             ],
         ),
-        tools=[get_weather, AgentTool(agent=search_agent), AgentTool(agent=coding_agent)],
+        tools=[
+            get_weather,
+            AgentTool(agent=search_agent),
+            AgentTool(agent=coding_agent),
+        ],
     )
 
     app = App(

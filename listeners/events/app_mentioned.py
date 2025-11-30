@@ -7,7 +7,9 @@ from ai.llm_caller import call_llm
 from ..views.feedback_block import create_feedback_block
 
 
-async def app_mentioned_callback(client: AsyncWebClient, event: dict, logger: Logger, say: AsyncSay):
+async def app_mentioned_callback(
+    client: AsyncWebClient, event: dict, logger: Logger, say: AsyncSay
+):
     """
     Handles the event when the app is mentioned in a Slack conversation
     and generates an AI response.
@@ -47,9 +49,7 @@ async def app_mentioned_callback(client: AsyncWebClient, event: dict, logger: Lo
 
         # Loop over streaming response from LLM
         async for text_chunk in call_llm(
-            [{"role": "user", "content": text}],
-            user_id=user_id,
-            session_id=thread_ts
+            [{"role": "user", "content": text}], user_id=user_id, session_id=thread_ts
         ):
             await streamer.append(markdown_text=text_chunk)
 

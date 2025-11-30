@@ -11,8 +11,8 @@ def get_weather(city: str) -> str:
     """
     try:
         url_encoded_city = urllib.parse.quote_plus(city)
-        wttr_url = f'https://wttr.in/{url_encoded_city}?format=%C+%t'
+        wttr_url = f"https://wttr.in/{url_encoded_city}?format=%C+%t"
         response = urllib.request.urlopen(wttr_url).read()
-        return response.decode('utf-8')
-    except Exception as e:
-        return f"Error fetching weather data"
+        return response.decode("utf-8")
+    except Exception:
+        return "Error fetching weather data"

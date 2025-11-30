@@ -27,6 +27,7 @@ app = AsyncApp(
 # Register Listeners
 register_listeners(app)
 
+
 async def main():
     handler = AsyncSocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN"))
     await handler.start_async()
