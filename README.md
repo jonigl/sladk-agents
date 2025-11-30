@@ -18,7 +18,7 @@
 - [📁 Project Structure](#-project-structure)
 - [🚀 Setup & Installation](#-setup--installation)
 - [🎮 Usage](#-usage)
-- [🖥️ Demos](#-demos)
+- [🖥️ Demos](#️-demos)
 - [🔧 Extending the Agent](#-extending-the-agent)
 - [📊 Impact & Value](#-impact--value)
 - [🛣️ Future Roadmap](#️-future-roadmap)
