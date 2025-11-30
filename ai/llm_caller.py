@@ -13,7 +13,7 @@ from ai.tools.custom_tools import get_weather
 
 APP_NAME = os.getenv("AGENT_APP_NAME", "Sladk_App")
 AGENT_NAME = os.getenv("AGENT_NAME", "Sladk_AI_Agent")
-AGENT_MODEL = os.getenv("AGENT_MODEL", "gemini-2.5-flash-preview-09-2025")
+AGENT_MODEL = os.getenv("AGENT_MODEL", "gemini-2.5-flash")
 DEFAULT_SYSTEM_INSTRUCTION = os.getenv(
     "DEFAULT_SYSTEM_INSTRUCTION",
     """You're an assistant in a Slack workspace.
@@ -36,14 +36,14 @@ async def call_llm(
 ) -> AsyncIterator[str]:
     """Call the LLM and yield text chunks asynchronously."""
     search_agent = Agent(
-        model='gemini-2.0-flash',
+        model=AGENT_MODEL,
         name='SearchAgent',
         instruction="You're a specialist in Google Search",
         tools=[google_search],
     )
 
     coding_agent = Agent(
-        model='gemini-2.0-flash',
+        model=AGENT_MODEL,
         name='CodeAgent',
         instruction="You're a specialist in Code Execution",
         code_executor=BuiltInCodeExecutor(),
@@ -54,7 +54,7 @@ async def call_llm(
         name=AGENT_NAME,
         instruction=system_instruction,
         generate_content_config=GenerateContentConfig(
-            temperature=0.2,
+            temperature=0.4,
             safety_settings=[
                 SafetySetting(
                     category=HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
