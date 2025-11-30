@@ -286,7 +286,7 @@ Once running, interact with your agent in three ways:
 - *"Calculate the compound interest on $1000 at 5% for 10 years"* → Uses CodeAgent
 - *"What's the weather in San Francisco?"* → Uses custom get_weather tool
 
-## Demos
+## 🖥️ Demos
 
 ### Demo 1
 
