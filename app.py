@@ -21,6 +21,7 @@ app = AsyncApp(
     client=AsyncWebClient(
         base_url=os.environ.get("SLACK_API_URL", "https://slack.com/api"),
         token=os.environ.get("SLACK_BOT_TOKEN"),
+        timeout=int(os.environ.get("SLACK_CLIENT_TIMEOUT", 30)),
     ),
 )
 # Register Listeners
