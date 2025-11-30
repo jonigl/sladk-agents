@@ -1,179 +1,364 @@
-# AI Agent App Template (Bolt for Python)
+# Sladk Agents
 
-This Bolt for Python template demonstrates how to build [AI Apps](https://docs.slack.dev/ai/) in Slack.
+**Your company's Slack AI agents of the new era of generative AI powered by Google Agent Development Kit (ADK)**
 
-Models from [OpenAI](https://openai.com) are used and can be customized for prompts of all kinds.
+[![Track: Enterprise Agents](https://img.shields.io/badge/Track-Enterprise%20Agents-blue)](https://www.kaggle.com/competitions/agents-intensive-capstone-project/overview/tracks-and-awards)
+[![Powered by Gemini](https://img.shields.io/badge/Powered%20by-Gemini-orange)](https://ai.google.dev/)
+[![Google ADK](https://img.shields.io/badge/Google-ADK-green)](https://google.github.io/adk-docs/)
+[![Slack Bolt](https://img.shields.io/badge/Slack-Bolt%20for%20Python-purple)](https://docs.slack.dev/tools/bolt-python)
 
-## Setup
+---
 
-Before getting started, make sure you have a development workspace where you have permissions to install apps. If you don’t have one setup, go ahead and [create one](https://slack.com/create).
+## 📑 Table of Contents
 
-### Developer Program
+- [🎯 The Problem](#-the-problem)
+- [💡 The Solution](#-the-solution)
+- [🏗️ Architecture](#️-architecture)
+- [✨ Key Features Implemented (ADK Concepts)](#-key-features-implemented-adk-concepts)
+- [📁 Project Structure](#-project-structure)
+- [🚀 Setup & Installation](#-setup--installation)
+- [🎮 Usage](#-usage)
+- [🔧 Extending the Agent](#-extending-the-agent)
+- [📊 Impact & Value](#-impact--value)
+- [🛣️ Future Roadmap](#️-future-roadmap)
+- [📚 References](#-references)
+- [📜 License](#-license)
+- [👤 Author](#-author)
+- [🙏 Acknowledgments](#-acknowledgments)
 
-Join the [Slack Developer Program](https://api.slack.com/developer-program) for exclusive access to sandbox environments for building and testing your apps, tooling, and resources created to help you build and grow.
+---
 
-## Installation
+## 🎯 The Problem
 
-Add this app to your workspace using either the Slack CLI or other development tooling, then read ahead to configuring LLM responses in the **[Providers](#providers)** section.
+Enterprise teams rely heavily on Slack for daily collaboration—sharing updates, asking questions, coordinating projects, and making decisions. However, accessing AI-powered assistance typically requires:
 
-### Using Slack CLI
+- **Context switching**: Leaving Slack to use external AI tools (Gemini web, chatGPT, etc.)
+- **Manual copy-paste workflows**: Moving conversation context between platforms
+- **Lost productivity**: Teams lose time switching between tools
+- **Fragmented knowledge**: AI insights don't stay where the work happens
 
-Install the latest version of the Slack CLI for your operating system:
+While Slack recently introduced [AI Agents](https://docs.slack.dev/ai/) as a native feature, building production-ready agents still requires significant integration work, especially when leveraging advanced AI frameworks.
 
-- [Slack CLI for macOS & Linux](https://docs.slack.dev/tools/slack-cli/guides/installing-the-slack-cli-for-mac-and-linux/)
-- [Slack CLI for Windows](https://docs.slack.dev/tools/slack-cli/guides/installing-the-slack-cli-for-windows/)
+## 💡 The Solution
 
-You'll also need to log in if this is your first time using the Slack CLI.
+**Sladk Agents** bridges the gap between Slack's native AI Agent capabilities and Google's powerful [Agent Development Kit (ADK)](https://google.github.io/adk-docs/). It provides a ready-to-deploy framework that enables enterprises to:
 
-```sh
-slack login
+- Deploy AI agents directly within Slack's native UI (side panel, threads, mentions)
+- Leverage Google ADK's multi-agent architecture with sub-agents for specialized tasks
+- Maintain conversation context through session management
+- Extend functionality with built-in and custom tools
+- Stream responses in real-time for a seamless user experience
+
+**Key Value Proposition**: Teams can now access sophisticated AI assistance exactly where they collaborate—no context switching, no copy-paste, just intelligent help when and where they need it.
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              SLACK WORKSPACE                                │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
+│  │  Side Panel │  │   Threads   │  │  @mentions  │  │   Direct Messages   │ │
+│  │  Assistant  │  │             │  │             │  │                     │ │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────────┬──────────┘ │
+└─────────┼────────────────┼────────────────┼────────────────────┼────────────┘
+          │                │                │                    │
+          └────────────────┴────────────────┴────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         SLADK AGENTS (Bolt for Python)                      │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │                          AsyncApp + Socket Mode                        │ │
+│  │  • Real-time WebSocket connection to Slack                             │ │
+│  │  • Async handlers for non-blocking operations                          │ │
+│  │  • Native streaming support (chat_stream)                              │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+│                                    │                                        │
+│                                    ▼                                        │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │                           LISTENERS                                    │ │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                  │ │
+│  │  │  Assistant   │  │    Events    │  │   Actions    │                  │ │
+│  │  │  • started   │  │  • mentions  │  │  • feedback  │                  │ │
+│  │  │  • message   │  │              │  │              │                  │ │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘                  │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         GOOGLE ADK (Agent Layer)                            │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │                         LlmAgent (Root Agent)                          │ │
+│  │  • Model: Gemini 2.5 Flash (configurable)                              │ │
+│  │  • Custom system instructions                                          │ │
+│  │  • Safety settings & temperature control                               │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+│                    │                    │                    │              │
+│                    ▼                    ▼                    ▼              │
+│  ┌──────────────────────┐ ┌──────────────────────┐ ┌──────────────────────┐ │
+│  │    SearchAgent       │ │     CodeAgent        │ │   Custom Tools       │ │
+│  │  (Sub-Agent)         │ │   (Sub-Agent)        │ │                      │ │
+│  │  ┌────────────────┐  │ │  ┌────────────────┐  │ │  ┌────────────────┐  │ │
+│  │  │ google_search  │  │ │  │ Code Executor  │  │ │  │  get_weather   │  │ │
+│  │  └────────────────┘  │ │  └────────────────┘  │ │  │  (wttr.in)     │  │ │
+│  └──────────────────────┘ └──────────────────────┘ │  └────────────────┘  │ │
+│                                                    │  ┌────────────────┐  │ │
+│                                                    │  │  + extensible  │  │ │
+│                                                    │  └────────────────┘  │ │
+│                                                    └──────────────────────┘ │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │                        SESSION MANAGEMENT                              │ │
+│  │  • InMemorySessionService: Maintains conversation state per thread     │ │
+│  │  • Context Compaction: Efficient token usage (interval=5, overlap=1)   │ │
+│  │  • User/Session ID mapping: Slack thread_ts → ADK session              │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │                              RUNNER                                    │ │
+│  │  • Async execution with run_async()                                    │ │
+│  │  • Streaming response chunks to Slack                                  │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            GEMINI API                                       │
+│                     (Generative AI Backend)                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-#### Initializing the project
+## ✨ Key Features Implemented (ADK Concepts)
 
-```sh
-slack create my-bolt-python-assistant --template slack-samples/bolt-python-assistant-template
-cd my-bolt-python-assistant
+This project demonstrates **5 key concepts** from the Google ADK course:
+
+### 1. Multi-Agent System
+- **Root Agent (`LlmAgent`)**: Orchestrates user requests and delegates to specialized sub-agents
+- **SearchAgent**: Handles web search queries using Google Search tool
+- **CodeAgent**: Executes Python code for calculations and data processing
+
+### 2. Tools Integration
+- **Built-in Tools**: `google_search` for real-time web information
+- **Code Execution**: `BuiltInCodeExecutor` for running Python code
+- **Custom Tools**: `get_weather()` function demonstrating extensibility
+
+### 3. Sessions & State Management
+- **InMemorySessionService**: Maintains conversation context across messages
+- **Session persistence**: Each Slack thread maps to a unique ADK session
+- **User isolation**: Sessions are scoped per user and thread
+
+### 4. Context Engineering
+- **EventsCompactionConfig**: Optimizes token usage with:
+  - `compaction_interval=5`: Compact every 5 events
+  - `overlap_size=1`: Maintain context continuity
+
+### 5. Effective Use of Gemini
+- **Model**: Gemini 2.5 Flash (configurable via environment)
+- **Safety Settings**: Configurable content filtering
+- **Streaming**: Real-time response streaming to Slack
+
+---
+
+## 📁 Project Structure
+
+```
+sladk-agents/
+├── app.py                    # Entry point - AsyncApp with Socket Mode
+├── app_oauth.py              # OAuth configuration for multi-workspace deployment
+├── manifest.json             # Slack app manifest configuration
+├── requirements.txt          # Python dependencies
+├── .env.sample               # Environment variables template
+│
+├── ai/
+│   ├── llm_caller.py         # Core ADK integration: agents, tools, sessions
+│   └── tools/
+│       └── custom_tools.py   # Custom tool implementations (get_weather)
+│
+└── listeners/
+    ├── __init__.py           # Listener registration
+    ├── assistant/
+    │   ├── assistant_thread_started.py  # Handle new assistant threads
+    │   └── message.py                   # Process user messages
+    ├── events/
+    │   └── app_mentioned.py  # Handle @mentions in channels
+    ├── actions/
+    │   └── actions.py        # Handle feedback buttons
+    └── views/
+        └── feedback_block.py # Feedback UI components
 ```
 
-#### Creating the Slack app
+## 🚀 Setup & Installation
 
-Use the following command to add your new Slack app to your development workspace. Choose a "local" app environment for upcoming development:
+### Prerequisites
 
-```sh
-slack install
+- Python 3.10+
+- A Slack workspace with admin permissions
+- Google API key with Gemini access
+
+> [!TIP]
+> You can obtain a Google API with Gemini in the [Google AI Studio](https://aistudio.google.com/app/api-keys).
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/jonigl/sladk-agents.git
+cd sladk-agents
 ```
 
-After the Slack app has been created you're all set to configure the LLM provider!
+### 2. Create Slack App
 
-### Using Terminal
+> [!TIP]
+> You can also review the original Slack Bolt template [instructions here](SLACK_BOLT_TEMPLATE_README.md#creating-the-slack-app).
 
-1. Open [https://api.slack.com/apps/new](https://api.slack.com/apps/new) and choose "From an app manifest"
-2. Choose the workspace you want to install the application to
-3. Copy the contents of [manifest.json](./manifest.json) into the text box that says `*Paste your manifest code here*` (within the JSON tab) and click _Next_
-4. Review the configuration and click _Create_
-5. Click _Install to Workspace_ and _Allow_ on the screen that follows. You'll then be redirected to the App Configuration dashboard.
+1. Go to [api.slack.com/apps/new](https://api.slack.com/apps/new) → "From an app manifest"
+2. Select your workspace
+3. Paste contents of `manifest.json` → Click **Next** → **Create**
+4. Click **Install to Workspace** → **Allow**
 
-#### Environment Variables
+### 3. Configure Environment
 
-Before you can run the app, you'll need to store some environment variables.
-
-1. Rename `.env.sample` to `.env`.
-2. Open your apps setting page from [this list](https://api.slack.com/apps), click _OAuth & Permissions_ in the left hand menu, then copy the _Bot User OAuth Token_ into your `.env` file under `SLACK_BOT_TOKEN`.
-
-```sh
-SLACK_BOT_TOKEN=YOUR_SLACK_BOT_TOKEN
+```bash
+cp .env.sample .env
 ```
 
-3. Click _Basic Information_ from the left hand menu and follow the steps in the _App-Level Tokens_ section to create an app-level token with the `connections:write` scope. Copy that token into your `.env` as `SLACK_APP_TOKEN`.
+Edit `.env` with your credentials:
 
-```sh
-SLACK_APP_TOKEN=YOUR_SLACK_APP_TOKEN
+```bash
+# Slack Configuration
+SLACK_APP_TOKEN=xapp-...        # Basic Info → App-Level Tokens → connections:write
+SLACK_BOT_TOKEN=xoxb-...        # OAuth & Permissions → Bot User OAuth Token
+
+# Google ADK Configuration
+GOOGLE_API_KEY=your_google_api_key
+AGENT_MODEL=gemini-2.5-flash    # or gemini-2.0-flash, gemini-1.5-pro
+AGENT_APP_NAME=Sladk_App
+AGENT_NAME=Sladk_AI_Agent
+
+# Optional: Custom system instruction
+DEFAULT_SYSTEM_INSTRUCTION="You're a helpful assistant in a Slack workspace..."
 ```
 
-#### Initializing the project
+### 4. Install Dependencies
 
-```sh
-git clone https://github.com/slack-samples/bolt-python-assistant-template.git my-bolt-python-assistant
-cd my-bolt-python-assistant
-```
-
-#### Setup your python virtual environment
-
-```sh
+```bash
 python3 -m venv .venv
-source .venv/bin/activate  # for Windows OS, .\.venv\Scripts\Activate instead should work
-```
-
-#### Install dependencies
-
-```sh
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Providers
+### 5. Run the Agent
 
-### OpenAI Setup
-
-Unlock the OpenAI models from your OpenAI account dashboard by clicking [create a new secret key](https://platform.openai.com/api-keys), then save your OpenAI key into the `.env` file as `OPENAI_API_KEY` like so:
-
-```zsh
-OPENAI_API_KEY=YOUR_OPEN_API_KEY
-```
-
-## Development
-
-### Starting the app
-
-#### Slack CLI
-
-```sh
-slack run
-```
-
-#### Terminal
-
-```sh
+```bash
 python3 app.py
 ```
 
-Start talking to the bot! Start a new DM or thread and click the feedback button when it responds.
+Or using Slack CLI:
 
-### Linting
-
-```sh
-# Run ruff check from root directory for linting
-ruff check
-
-# Run ruff format from root directory for code formatting
-ruff format
+```bash
+slack run
 ```
 
-## Project Structure
+---
 
-### `manifest.json`
+## 🎮 Usage
 
-`manifest.json` is a configuration for Slack apps. With a manifest, you can create an app with a pre-defined configuration, or adjust the configuration of an existing app.
+### Configure your Slack Preferences
 
-### `app.py`
+1. Open Slack → Click your profile picture → **Preferences**
+2. Go to **Navigation** → Go to the **App agents & assistants**
+3. Click the checkbox for **Show app agents**
 
-`app.py` is the entry point for the application and is the file you'll run to start the server. This project aims to keep this file as thin as possible, primarily using it as a way to route inbound requests.
+### Interact with the Agent
 
-### `/listeners`
+Once running, interact with your agent in three ways:
 
-Every incoming request is routed to a "listener". This directory groups each listener based on the Slack Platform feature used, so `/listeners/events` handles incoming events, `/listeners/shortcuts` would handle incoming [Shortcuts](https://docs.slack.dev/interactivity/implementing-shortcuts/) requests, and so on.
+| Method | How |
+|--------|-----|
+| **Side Panel** | Click the agent icon in Slack's top right corner to open the AI assistant |
+| **@Mention** | Type `@Sladk AI Agent` in any channel |
+| **Direct Message** | Send a DM to the bot |
 
-**`/listeners/assistant`**
+### Example Interactions
 
-Configures the new Slack Assistant features, providing a dedicated side panel UI for users to interact with the AI chatbot. This module includes:
+- *"Search for the latest news about AI agents"* → Uses SearchAgent
+- *"Calculate the compound interest on $1000 at 5% for 10 years"* → Uses CodeAgent
+- *"What's the weather in San Francisco?"* → Uses custom get_weather tool
 
-- The `assistant_thread_started.py` file, which responds to new app threads with a list of suggested prompts.
-- The `message.py` file, which responds to user messages sent to app threads or from the **Chat** and **History** tab with an LLM generated response.
+---
 
-### `/ai`
+## 🔧 Extending the Agent
 
-The `llm_caller.py` file, which handles OpenAI API integration and message formatting. It includes the `call_llm()` function that sends conversation threads to OpenAI's models.
+### Adding Custom Tools
 
-## App Distribution / OAuth
+Create new tools in `ai/tools/custom_tools.py`:
 
-Only implement OAuth if you plan to distribute your application across multiple workspaces. A separate `app_oauth.py` file can be found with relevant OAuth settings.
-
-When using OAuth, Slack requires a public URL where it can send requests. In this template app, we've used [`ngrok`](https://ngrok.com/download). Checkout [this guide](https://ngrok.com/docs#getting-started-expose) for setting it up.
-
-Start `ngrok` to access the app on an external network and create a redirect URL for OAuth.
-
+```python
+def my_custom_tool(param: str) -> str:
+    """
+    Description of what this tool does.
+    Args:
+        param: Description of parameter
+    Returns:
+        str: Description of return value
+    """
+    # Your implementation
+    return result
 ```
-ngrok http 3000
+
+Then add to the agent in `ai/llm_caller.py`:
+
+```python
+from ai.tools.custom_tools import get_weather, my_custom_tool
+
+agent = LlmAgent(
+    # ...
+    tools=[get_weather, my_custom_tool, AgentTool(agent=search_agent)],
+)
 ```
 
-This output should include a forwarding address for `http` and `https` (we'll use `https`). It should look something like the following:
+## 📊 Impact & Value
 
-```
-Forwarding   https://3cb89939.ngrok.io -> http://localhost:3000
-```
+| Metric | Improvement |
+|--------|-------------|
+| **Context Switching** | Eliminated - AI lives in Slack |
+| **Response Time** | Real-time streaming responses |
+| **Tool Access** | Web search, code execution, custom tools in one place |
+| **Session Memory** | Maintains context across conversation |
+| **Deployment** | Single Python app, no infrastructure complexity |
 
-Navigate to **OAuth & Permissions** in your app configuration and click **Add a Redirect URL**. The redirect URL should be set to your `ngrok` forwarding address with the `slack/oauth_redirect` path appended. For example:
+## 🛣️ Future Roadmap
 
-```
-https://3cb89939.ngrok.io/slack/oauth_redirect
-```
+- [ ] **Memory Bank Integration**: Long-term memory across sessions
+- [ ] **MCP Tools**: Model Context Protocol for external integrations
+- [ ] **Agent Engine Deployment**: Cloud Run / Agent Engine deployment
+- [ ] **Observability**: Tracing and metrics with OpenTelemetry
+- [ ] **A2A Protocol**: Agent-to-agent communication for complex workflows
+
+## 📚 References
+
+- [Google ADK Documentation](https://google.github.io/adk-docs/)
+- [Slack AI Apps Documentation](https://docs.slack.dev/ai/)
+- [Bolt for Python](https://docs.slack.dev/tools/bolt-python)
+- [Gemini API](https://ai.google.dev/)
+
+## 📜 License
+
+This project uses **dual licensing**:
+
+| Component | License | File |
+|-----------|---------|------|
+| Base code (Slack Bolt template) | MIT License | [LICENSE](LICENSE) |
+| Sladk Agents additions (agent logic, architecture, ADK integration) | CC-BY-SA 4.0 | [LICENSE_CAPSTONE](LICENSE_CAPSTONE) |
+
+The base Slack Bolt template code is covered by the **MIT License** (original work by Slack Technologies, LLC). All new agent logic, architecture, and Google ADK integration created for this Capstone project is licensed under **CC-BY-SA 4.0** as required by the Kaggle competition rules.
+
+## 👤 Author
+
+**Jonathan Gastón Löwenstern** - GitHub: [@jonigl](https://github.com/jonigl)
+
+Built with ❤️ for the [Kaggle & Google: Agents Intensive - Capstone Project](https://www.kaggle.com/competitions/agents-intensive-capstone-project) - November 2025
+
+## 🙏 Acknowledgments
+
+- Slack for the [bolt-python-assistant-template](https://github.com/slack-samples/bolt-python-assistant-template) foundation
+- Google for the [Agent Development Kit (ADK)](https://google.github.io/adk-docs/)
+- The [5-Day AI Agents Intensive Course with Google](https://www.kaggle.com/learn-guide/5-day-agents) community for inspiration and guidance
