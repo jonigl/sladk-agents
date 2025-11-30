@@ -26,12 +26,12 @@ async def assistant_thread_started(
                 "message": "Slack, a business communication service, was named after an acronym. Can you guess what it stands for?",
             },
             {
-                "title": "Write a draft announcement",
-                "message": "Can you write a draft announcement about a new feature my team just released? It must include how impactful it is.",
+                "title": "What Google ADK is?",
+                "message": "Google Agents Development Kit (ADK) is a framework for building AI agents that can interact with various Google services. Can you explain how Google ADK works and its main features?",
             },
             {
-                "title": "Suggest names for my Slack app",
-                "message": "Can you suggest a few names for my Slack app? The app helps my teammates better organize information and plan priorities and action items.",
+                "title": "What Sladk Agents is? ",
+                "message": "Sladk Agents is a project that integrates Slack AI Agents with Google Agents Development Kit (ADK). What could be the benefits of using Sladk Agents in a workspace?",
             },
         ]
 
