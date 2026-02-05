@@ -21,9 +21,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.CR_PAT }}
 
+      - name: Set image tag (use text after last slash)
+        id: vars
+        run: |
+          ref="${{ github.ref_name }}"
+          tag="${ref##*/}"
+          echo "image_tag=$tag" >> "$GITHUB_OUTPUT"
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: / 
+          context: .
           push: true
-          tags: ghcr.io/rogerdipasquale/sladk:${{ github.ref_name }}
+          tags: ghcr.io/rogerdipasquale/sladk-agents:${{ steps.vars.outputs.image_tag }}
