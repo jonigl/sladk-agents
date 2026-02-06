@@ -19,8 +19,8 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.CR_PAT }}
-
+          password: ${{ secrets.CR_PAT }
+          # CR_PAT is a repository secret that must contain a PAT key enabled to write and read packages
       - name: Set image tag (use text after last slash)
         id: vars
         run: |
@@ -33,4 +33,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/rogerdipasquale/sladk-agents:${{ steps.vars.outputs.image_tag }}
+          tags: ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.image_tag }}
