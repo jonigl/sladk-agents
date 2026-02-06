@@ -1,0 +1,50 @@
+{{- if .Values.hpaRequired }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- .Values.labels | nindent 4 }}
+spec:
+  behavior:
+    scaleDown:
+      policies:
+      - periodSeconds: {{ .Values.hpa.scaleDown.policies.percentPeriodSeconds }}
+        type: {{ .Values.hpa.scaleDown.policies.percentType }}
+        value: {{ .Values.hpa.scaleDown.policies.percentValue }}
+      selectPolicy: {{ .Values.hpa.scaleDown.selectPolicy }}
+      stabilizationWindowSeconds: {{ .Values.hpa.scaleDown.stabilizationWindowSeconds }}
+    scaleUp:
+      policies:
+      - periodSeconds: {{ .Values.hpa.scaleUp.policies.podsPeriodSeconds }}
+        type: {{ .Values.hpa.scaleUp.policies.podsType }}
+        value: {{ .Values.hpa.scaleUp.policies.podsValue }}
+      - periodSeconds: {{ .Values.hpa.scaleUp.policies.percentPeriodSeconds }}
+        type: {{ .Values.hpa.scaleUp.policies.percentType }}
+        value: {{ .Values.hpa.scaleUp.policies.percentValue }}
+      selectPolicy: {{ .Values.hpa.scaleUp.selectPolicy }}
+      stabilizationWindowSeconds: {{ .Values.hpa.scaleUp.stabilizationWindowSeconds }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  metrics:
+  {{- if and .Values.hpa.memory (not .Values.hpa.memory.disabled) }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.hpa.memory.averageUtilization }}
+  {{- end }}
+  {{- if and .Values.hpa.cpu (not .Values.hpa.cpu.disabled) }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.hpa.cpu.averageUtilization }}
+  {{- end }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Release.Name }}
+{{- end }}
