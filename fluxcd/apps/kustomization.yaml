@@ -6,7 +6,7 @@ metadata:
 resources:
   - ./overlays/main/
 configMapGenerator:
-  - name: helm-defaults
+  - name: common-sladk
     files:
       - values.yaml=defaults.yaml
 configurations:

@@ -10,4 +10,5 @@ spec:
   secretRef:
     name: flux-system
   timeout: 60s
-  url: ssh://git@github.com/rogerdipasquale/sladk-agents
+  url: https://github.com/rogerdipasquale/sladk-agents
+
