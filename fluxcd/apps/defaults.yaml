@@ -1,0 +1,12 @@
+image:
+  repository: ghcr.io/rogerdipasquale/sladk-agents
+  tag: latest
+  pullPolicy: Always
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1024M
+  requests: 
+    cpu: 400m
+    memory: 512M
+
