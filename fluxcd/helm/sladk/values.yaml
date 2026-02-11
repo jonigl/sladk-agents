@@ -1,6 +1,6 @@
 selectorLabels:
   app: slackd
-  purpose:ia
+  purpose: ia
 labels:
   app: slackd
   purpose: ia
