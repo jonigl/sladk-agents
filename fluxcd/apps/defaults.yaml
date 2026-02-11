@@ -9,12 +9,13 @@ resources:
   requests: 
     cpu: 400m
     memory: 512M
-selectorLabels: |
-  sladk
-  test
-labels: |
-  sladk
-  test
+selectorLabels: 
+  app: sladk
+  env: test
+  purpose: ia
+labels:
+  app: slakd
+  purpose: ia
 replcaCount: 1
 hpaRequired: true
 hpa:
