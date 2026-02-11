@@ -39,9 +39,9 @@ hpa:
   maxReplicas: 1
   minReplicas: 1
   memory:
-    averageUtilization: 90%
+    averageUtilization: 90
   cpu:
-    averageUtilization: 90%
+    averageUtilization: 90
 livenessprobe:
   failureThreshold: 3
   httpGet:
