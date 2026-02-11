@@ -7,5 +7,5 @@ spec:
   releaseName: sladk-main-release
   values:
     image:
-      tag: latest
+      tag: initial
 

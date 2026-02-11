@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/rogerdipasquale/sladk-agents
-  tag: latest
+  tag: initial
   pullPolicy: Always
 resources:
   limits:
