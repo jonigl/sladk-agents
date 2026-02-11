@@ -1,0 +1,44 @@
+image:
+  repository: ghcr.io/rogerdipasquale/sladk-agents
+  tag: latest
+  pullPolicy: Always
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1024M
+  requests: 
+    cpu: 400m
+    memory: 512M
+selectorLabels: |
+  sladk
+  test
+labels: |
+  sladk
+  test
+replcaCount: 1
+hpaRequired: true
+hpa:
+  scaleDown:
+    policies:
+      percentPeriodSeconds: 15
+      percentType: Percent
+      percentValue: 100
+    selectPolicy: Max
+    stabilizationWindowSeconds: 300
+  scaleUp:
+    policies:
+      podsPeriodSeconds: 15
+      podsType: Pods
+      podsValue: 4
+      percentPeriodSeconds: 15
+      percentType: Percent
+      percentValue: 100
+    selectPolicy: Max
+    stabilizationWindowSeconds: 0
+  maxReplicas: 1
+  minReplicas: 1
+  memory:
+    averageUtilization: 90%
+  cpu:
+    averageUtilization: 90%
+

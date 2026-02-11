@@ -1,0 +1,36 @@
+name: Build and Push Docker Image for Sladk
+on:
+  push:
+    branches:
+      - release/*
+      - main
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.CR_PAT }}
+          # CR_PAT is a repository secret that must contain a PAT key enabled to write and read packages
+      - name: Set image tag (use text after last slash)
+        id: vars
+        run: |
+          ref="${{ github.ref_name }}"
+          tag="${ref##*/}"
+          echo "image_tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.image_tag }}
