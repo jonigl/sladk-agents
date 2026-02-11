@@ -42,7 +42,7 @@ hpa:
     averageUtilization: 90%
   cpu:
     averageUtilization: 90%
-livenessProbe:
+livenessprobe:
   failureThreshold: 3
   httpGet:
     path: /status
@@ -52,7 +52,7 @@ livenessProbe:
   periodSeconds: 20
   successThreshold: 1
   timeoutSeconds: 10
-startupProbe:
+startupprobe:
   failureThreshold: 3
   httpGet:
     path: /v2/rules
