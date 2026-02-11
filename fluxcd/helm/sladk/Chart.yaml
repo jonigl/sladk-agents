@@ -3,4 +3,4 @@ apiVersion: v2
 name: sladk
 description: A Helm chart for sladk agent
 type: application
-version: 0.0.5
+version: 0.0.6
