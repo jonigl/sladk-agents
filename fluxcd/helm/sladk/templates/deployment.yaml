@@ -3,12 +3,12 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}
   labels:
-    {{- .Values.labels | nindent 4 }}
+    {{- .Values.labels }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- .Values.selectorLabels  | nindent 6 }}
+      {{- .Values.selectorLabels }}
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.rollingUpdate.maxSurge }}
