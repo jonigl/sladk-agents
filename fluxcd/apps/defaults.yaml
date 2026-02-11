@@ -42,7 +42,7 @@ hpa:
     averageUtilization: 90%
   cpu:
     averageUtilization: 90%
- livenessProbe:
+livenessProbe:
   failureThreshold: 3
   httpGet:
     path: /status
