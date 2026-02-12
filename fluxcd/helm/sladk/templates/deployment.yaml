@@ -34,6 +34,12 @@ spec:
         - name: app
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+             imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.secretRef }}
+          envFrom:
+          - secretRef:
+              name: {{ . }}
+          {{ end }}
           livenessProbe:
             {{- toYaml .Values.livenessprobe | nindent 12 }}
           startupProbe:

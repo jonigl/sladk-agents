@@ -62,4 +62,5 @@ startupprobe:
   periodSeconds: 30
   successThreshold: 1
   timeoutSeconds: 60
+secretRef: sladk-secrets
 
