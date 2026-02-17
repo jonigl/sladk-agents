@@ -14,7 +14,7 @@ selectorLabels:
   env: test
   purpose: ia
 labels:
-  app: slakd
+  app: sladk
   purpose: ia
 replcaCount: 1
 hpaRequired: true
