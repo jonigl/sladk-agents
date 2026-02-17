@@ -17,8 +17,7 @@ spec:
     - kind: ConfigMap
       name: common-sladk
   values:
-    cronjob:
-      envVars: 
-        - name: ENV
-          value: stage
+    env: 
+      - name: ENV
+        value: stage
 

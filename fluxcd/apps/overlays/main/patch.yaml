@@ -8,4 +8,3 @@ spec:
   values:
     image:
       tag: initial
-
