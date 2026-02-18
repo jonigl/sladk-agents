@@ -95,6 +95,32 @@ fluxcd/
 
 - **Secret Reference**: `sladk-secrets`
 
+## Secret Template
+
+The application requires a secret named `sladk-secrets` in the `sladk` namespace. Create a file named `sladk-secrets.yaml` with the following template:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sladk-secrets
+  namespace: sladk
+type: Opaque
+stringData:
+  # Add your secret keys and values here
+  # Example:
+  # API_KEY: your-api-key-here
+  # .....
+```
+
+Apply the secret before deploying:
+
+```bash
+kubectl apply -f sladk-secrets.yaml
+```
+
+**Note:** For production, consider using external secrets operators (like ESO or SealedSecrets) to manage secrets securely through GitOps.
+
 ## Labels & Selectors
 
 | Key | Value |
