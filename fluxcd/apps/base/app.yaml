@@ -11,7 +11,7 @@ spec:
       chart: ./fluxcd/helm/sladk
       sourceRef:
         kind: GitRepository
-        name: sladk-repo
+        name: sladk-agents-repo
         namespace: flux-system
   valuesFrom:
     - kind: ConfigMap

@@ -164,7 +164,7 @@ kubectl apply -f fluxcd/kustomization.yaml
 
 ## Namespace
 
-The application is deployed to the `sladk` namespace, which must exist before deployment:
+The application is deployed to the `sladk-agents` namespace, which must exist before deployment:
 
 ```bash
 kubectl create namespace sladk
