@@ -3,8 +3,9 @@ ARG USERNAME=adk
 
 WORKDIR /opt/app
 
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt
 COPY . .
-RUN pip3 install -r requirements.txt
 
 RUN adduser -D $USERNAME
 RUN chown -R $USERNAME /opt/app
