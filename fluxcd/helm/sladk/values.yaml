@@ -47,5 +47,4 @@ hpa:
     averageUtilization: 90
   cpu:
     averageUtilization: 90
-secretRef: my-secret
-
+secretRef: sladk-secrets

@@ -1,22 +1,25 @@
 image:
-  repository: ghcr.io/rogerdipasquale/sladk-agents
+  repository: ghcr.io/jonigl/sladk-agents
   tag: initial
   pullPolicy: Always
 resources:
   limits:
     cpu: 1000m
     memory: 1024M
-  requests: 
+  requests:
     cpu: 400m
     memory: 512M
-selectorLabels: 
-  app: sladk
+selectorLabels:
+  app: sladk-agent
   env: test
   purpose: ia
 labels:
-  app: sladk
+  app: sladk-agent
   purpose: ia
 replicaCount: 1
+rollingUpdate:
+  maxSurge: "25%"
+  maxUnavailable: "25%"
 hpaRequired: true
 hpa:
   scaleDown:
@@ -65,4 +68,3 @@ startupprobe:
   successThreshold: 1
   timeoutSeconds: 1
 secretRef: sladk-secrets
-

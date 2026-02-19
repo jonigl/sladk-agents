@@ -11,6 +11,6 @@ spec:
   retryInterval: 3m0s
   sourceRef:
     kind: GitRepository
-    name: sladk-repo
+    name: sladk-agents-repo
   targetNamespace: sladk-agents
   wait: true
