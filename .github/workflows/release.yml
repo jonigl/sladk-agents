@@ -20,7 +20,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          # CR_PAT is a repository secret that must contain a PAT key enabled to write and read packages
       - name: Set image tag (use text after last slash)
         id: vars
         run: |
