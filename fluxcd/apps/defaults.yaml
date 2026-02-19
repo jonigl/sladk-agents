@@ -11,11 +11,8 @@ resources:
     memory: 512M
 selectorLabels:
   app: sladk-agent
-  env: test
-  purpose: ia
 labels:
   app: sladk-agent
-  purpose: ia
 replicaCount: 1
 rollingUpdate:
   maxSurge: "25%"
