@@ -1,0 +1,10 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sladk
+  namespace: sladk-agents
+spec:
+  releaseName: sladk-main-release
+  values:
+    image:
+      tag: initial

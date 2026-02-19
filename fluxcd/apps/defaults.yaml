@@ -1,0 +1,67 @@
+image:
+  repository: ghcr.io/jonigl/sladk-agents
+  tag: initial
+  pullPolicy: Always
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1024M
+  requests:
+    cpu: 400m
+    memory: 512M
+selectorLabels:
+  app: sladk-agent
+labels:
+  app: sladk-agent
+replicaCount: 1
+rollingUpdate:
+  maxSurge: "25%"
+  maxUnavailable: "25%"
+hpaRequired: true
+hpa:
+  scaleDown:
+    policies:
+      percentPeriodSeconds: 15
+      percentType: Percent
+      percentValue: 100
+    selectPolicy: Max
+    stabilizationWindowSeconds: 300
+  scaleUp:
+    policies:
+      podsPeriodSeconds: 15
+      podsType: Pods
+      podsValue: 4
+      percentPeriodSeconds: 15
+      percentType: Percent
+      percentValue: 100
+    selectPolicy: Max
+    stabilizationWindowSeconds: 0
+  maxReplicas: 1
+  minReplicas: 1
+  memory:
+    averageUtilization: 90
+  cpu:
+    averageUtilization: 90
+livenessprobe:
+  failureThreshold: 3
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - "ps | grep -q '[a]pp.py'"
+  initialDelaySeconds: 10
+  periodSeconds: 60
+  successThreshold: 1
+  timeoutSeconds: 2
+startupprobe:
+  exec:
+    command:
+      - /bin/sh
+      - -c
+      - "ps | grep -q '[a]pp.py'"
+  failureThreshold: 3
+  initialDelaySeconds: 2
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 1
+secretRef: sladk-secrets

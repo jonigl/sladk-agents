@@ -1,0 +1,18 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: sladk-agent
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./fluxcd/apps/
+  dependsOn:
+    - name: sladk-namespace
+  prune: true
+  timeout: 1m
+  retryInterval: 3m0s
+  sourceRef:
+    kind: GitRepository
+    name: sladk-agents-repo
+  targetNamespace: sladk-agents
+  wait: true
