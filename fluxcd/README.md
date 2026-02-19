@@ -131,7 +131,7 @@ kubectl apply -f sladk-secrets.yaml
 
 ## Deployment Flow
 
-1. **FluxCD** monitors the GitRepository (`sladk-repo`) at the `feature/main` branch
+1. **FluxCD** monitors the GitRepository (`sladk-agents-repo`) at the `feature/main` branch
 2. The root Kustomization syncs the `apps/` directory every 10 minutes
 3. The apps Kustomization generates a ConfigMap (`common-sladk`) with default values
 4. The base HelmRelease is applied, using the chart from `fluxcd/helm/sladk`
