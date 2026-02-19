@@ -32,8 +32,8 @@ fluxcd/
 ## Components
 
 ### 1. GitRepository (`gitrepository.yaml`)
-- **Source**: `https://github.com/rogerdipasquale/sladk-agents`
-- **Branch**: `feature/main`
+- **Source**: `https://github.com/jonigl/sladk-agents`
+- **Branch**: `main`
 - **Namespace**: `flux-system`
 - **Interval**: Syncs every 10 minutes
 
@@ -50,13 +50,13 @@ fluxcd/
 
 ### 4. HelmRelease (`apps/base/app.yaml`)
 - **Release Name**: `sladk`
-- **Namespace**: `sladk`
+- **Namespace**: `sladk-agents`
 - **Interval**: 10 minutes
 - **Values Source**: ConfigMap generated from `defaults.yaml`
 
 ### 5. Overlay (`apps/overlays/main/`)
 - **Name Suffix**: `-main`
-- **Namespace**: `sladk`
+- **Namespace**: `flux-system`
 - **Patch**: Overrides image tag to `initial`
 
 ## Application Configuration
@@ -65,7 +65,7 @@ fluxcd/
 
 | Parameter | Value |
 |-----------|-------|
-| Image Repository | `ghcr.io/rogerdipasquale/sladk-agents` |
+| Image Repository | `ghcr.io/jonigl/sladk-agents` |
 | Image Tag | `initial` |
 | Pull Policy | `Always` |
 | Replica Count | 1 |
@@ -107,10 +107,12 @@ metadata:
   namespace: sladk-agents
 type: Opaque
 stringData:
-  # Add your secret keys and values here
-  # Example:
-  # API_KEY: your-api-key-here
-  # .....
+  SLACK_APP_TOKEN: "your-slack-app-token-here"
+  SLACK_BOT_TOKEN: "your-slack-bot-token-here"
+  GOOGLE_API_KEY: "your-google-api-key-here"
+  AGENT_MODEL: "gemini-2.5-flash"
+  AGENT_APP_NAME: "SLADK Agent"
+  AGENT_NAME: "Assistant"
 ```
 
 Apply the secret before deploying:
@@ -131,12 +133,12 @@ kubectl apply -f sladk-secrets.yaml
 
 ## Deployment Flow
 
-1. **FluxCD** monitors the GitRepository (`sladk-agents-repo`) at the `feature/main` branch
+1. **FluxCD** monitors the GitRepository (`sladk-agents-repo`) at the `main` branch
 2. The root Kustomization syncs the `apps/` directory every 10 minutes
 3. The apps Kustomization generates a ConfigMap (`common-sladk`) with default values
 4. The base HelmRelease is applied, using the chart from `fluxcd/helm/sladk`
 5. The main overlay applies a patch to override the image tag to `initial`
-6. Helm installs/updates the `sladk-main-release` in the `sladk` namespace
+6. Helm installs/updates the `sladk-main-release` in the `sladk-agents` namespace
 
 ## Usage
 
@@ -167,5 +169,5 @@ kubectl apply -f fluxcd/kustomization.yaml
 The application is deployed to the `sladk-agents` namespace, which must exist before deployment:
 
 ```bash
-kubectl create namespace sladk
+kubectl create namespace sladk-agents
 ```
