@@ -104,7 +104,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: sladk-secrets
-  namespace: sladk
+  namespace: sladk-agents
 type: Opaque
 stringData:
   # Add your secret keys and values here
