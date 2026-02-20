@@ -22,6 +22,8 @@ git clone https://github.com/jonigl/sladk-agents.git
 cd sladk-agents
 cp .env.sample .env
 # Edit .env: SLACK_APP_TOKEN, SLACK_BOT_TOKEN, GOOGLE_API_KEY, AGENT_MODEL (e.g. gemini-2.5-flash)
+cp AGENTS.md.sample AGENTS.md
+# Edit AGENTS.md to define your agent's persona (optional — a default is used if omitted)
 python3 -m venv .venv
 source .venv/bin/activate   # or .venv\Scripts\activate on Windows
 pip install -r requirements.txt
@@ -52,6 +54,35 @@ Slack: **Preferences → Navigation → App agents & assistants** → enable **S
 | DM          | Direct message to the bot |
 
 Example prompts: search the web, run Python snippets, or use built-in tools like weather (see `ai/tools/custom_tools.py`).
+
+## Agent persona (AGENTS.md)
+
+You can give the agent a completely different role or personality without touching any code — just drop an `AGENTS.md` file in the project root.
+
+```bash
+cp AGENTS.md.sample AGENTS.md
+# Edit AGENTS.md with any role, e.g. a security & compliance reviewer or a legal assistant
+```
+
+The full file content becomes the system instruction sent to the LLM. Restart the app to pick up changes.
+
+**Resolution order** (highest wins):
+
+| Priority | Source | When |
+|----------|--------|---------|
+| 1 | `DEFAULT_SYSTEM_INSTRUCTION` env var | Always the highest priority |
+| 2 | `AGENTS.md` file | When env var is not set |
+| 3 | Built-in Slack assistant default | Fallback when neither is set |
+
+To load the file from a different path, set `AGENTS_MD_PATH` in your `.env`:
+
+```bash
+AGENTS_MD_PATH=/path/to/my-agent.md
+```
+
+`AGENTS.md` is git-ignored (like `.env`) so each deployment can have its own persona. Commit `AGENTS.md.sample` as a template.
+
+> **Docker / Kubernetes** — either bake `AGENTS.md` into the image or mount it as a volume / ConfigMap and set `AGENTS_MD_PATH` accordingly.
 
 ## Extending
 

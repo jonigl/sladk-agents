@@ -36,6 +36,7 @@ tmp.txt
 .DS_Store
 logs/
 *.db
+AGENTS.md
 .pytype/
 .idea/
 
