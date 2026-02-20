@@ -43,6 +43,12 @@ def load_system_instruction() -> str:
             "No AGENTS.md found at %s, using built-in default.",
             agents_md_path.resolve(),
         )
+    except (OSError, UnicodeDecodeError) as e:
+        logger.warning(
+            "Could not read %s (%s), falling back to built-in default.",
+            agents_md_path.resolve(),
+            e,
+        )
 
     # 3. Fallback default
     logger.info("System instruction: using built-in Slack assistant default.")
