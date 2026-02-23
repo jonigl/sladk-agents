@@ -1,5 +1,5 @@
 slack-sdk==3.37.0
-slack-bolt==1.26.0
+slack-bolt==1.27.0
 slack-cli-hooks==0.2.0
 google-adk==1.19.0
 pytest==9.0.1
