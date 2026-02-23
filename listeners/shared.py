@@ -21,6 +21,14 @@ async def process_and_stream_message(
     text: str,
     files: list,
 ):
+    if not all([channel_id, team_id, user_id, thread_ts]):
+        logger.error(
+            "process_and_stream_message: required context missing "
+            f"(channel_id={channel_id!r}, team_id={team_id!r}, "
+            f"user_id={user_id!r}, thread_ts={thread_ts!r}); skipping stream."
+        )
+        return
+
     try:
         attachment_context, warnings = await ingest_latest_message_attachments(
             files=files,
