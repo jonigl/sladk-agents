@@ -36,7 +36,8 @@ def load_system_instruction() -> str:
             return content
         else:
             logger.warning(
-                "File %s is empty, falling back to default.", agents_md_path.resolve()
+                "System instruction file %s is empty, falling back to default.",
+                agents_md_path.resolve(),
             )
     except FileNotFoundError:
         logger.debug(
