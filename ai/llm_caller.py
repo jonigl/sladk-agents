@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Dict, List, AsyncIterator
+from typing import AsyncIterator
 from google.adk.agents import Agent, LlmAgent
 from google.adk.apps import App
 from google.adk.apps.app import EventsCompactionConfig
@@ -25,6 +25,8 @@ logger = logging.getLogger(__name__)
 APP_NAME = os.getenv("AGENT_APP_NAME", "Sladk_App")
 AGENT_NAME = os.getenv("AGENT_NAME", "Sladk_AI_Agent")
 AGENT_MODEL = os.getenv("AGENT_MODEL", "gemini-2.5-flash")
+AGENT_MAX_OUTPUT_TOKENS = int(os.getenv("AGENT_MAX_OUTPUT_TOKENS", "0"))
+AGENT_TARGET_OUTPUT_CHARS = int(os.getenv("AGENT_TARGET_OUTPUT_CHARS", "9000"))
 
 DEFAULT_SYSTEM_INSTRUCTION = load_system_instruction()
 
@@ -34,12 +36,19 @@ session_service = InMemorySessionService()
 
 
 async def call_llm(
-    messages_in_thread: List[Dict[str, str]],
+    user_prompt: str,
     system_instruction: str = DEFAULT_SYSTEM_INSTRUCTION,
     user_id: str = "default_user",
     session_id: str = None,
 ) -> AsyncIterator[str]:
     """Call the LLM and yield text chunks asynchronously."""
+    effective_instruction = (
+        f"{system_instruction}\n\n"
+        "Response length guidance:\n"
+        f"- Keep the default response under ~{AGENT_TARGET_OUTPUT_CHARS} characters.\n"
+        "- Prefer concise answers unless the user explicitly asks for deep detail."
+    )
+
     search_agent = Agent(
         model=AGENT_MODEL,
         name="SearchAgent",
@@ -54,19 +63,23 @@ async def call_llm(
         code_executor=BuiltInCodeExecutor(),
     )
 
+    generation_config = GenerateContentConfig(
+        temperature=0.4,
+        safety_settings=[
+            SafetySetting(
+                category=HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                threshold=HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+            )
+        ],
+    )
+    if AGENT_MAX_OUTPUT_TOKENS > 0:
+        generation_config.max_output_tokens = AGENT_MAX_OUTPUT_TOKENS
+
     agent = LlmAgent(
         model=AGENT_MODEL,
         name=AGENT_NAME,
-        instruction=system_instruction,
-        generate_content_config=GenerateContentConfig(
-            temperature=0.4,
-            safety_settings=[
-                SafetySetting(
-                    category=HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                    threshold=HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-                )
-            ],
-        ),
+        instruction=effective_instruction,
+        generate_content_config=generation_config,
         tools=[
             get_weather,
             AgentTool(agent=search_agent),
@@ -102,11 +115,10 @@ async def call_llm(
         session_service=session_service,
     )
 
-    latest_user_message = messages_in_thread[-1] if messages_in_thread else None
-    if not latest_user_message:
+    if not user_prompt:
         return
 
-    msg = Content(role="user", parts=[Part(text=latest_user_message["content"])])
+    msg = Content(role="user", parts=[Part(text=user_prompt)])
 
     async for event in runner.run_async(
         user_id=user_id,

@@ -14,7 +14,7 @@ from listeners import register_listeners
 load_dotenv(dotenv_path=".env", override=False)
 
 # Initialization
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper())
 
 app = AsyncApp(
     token=os.environ.get("SLACK_BOT_TOKEN"),

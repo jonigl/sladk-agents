@@ -43,6 +43,17 @@ Or using Slack CLI:
 slack run
 ```
 
+## Output length controls
+
+Two `.env` knobs control response length:
+
+- `AGENT_MAX_OUTPUT_TOKENS` — hard cap on ADK/Gemini output tokens; set `0` to disable (default `0`)
+- `AGENT_TARGET_OUTPUT_CHARS` — character budget applied both to the concise-response guidance sent to the LLM and to each Slack streaming message (default `9000`)
+
+When a response exceeds the streaming budget, the app continues automatically in the same thread with a follow-up message.
+
+**Attachment handling** (optional overrides): `ATTACHMENT_MAX_CHAR_BUDGET` (default `200000`), `ATTACHMENT_MAX_FILES` (default `5`), `ATTACHMENT_DOWNLOAD_TIMEOUT` (default `15` seconds).
+
 Slack: **Preferences → Navigation → App agents & assistants** → enable **Show app agents**. Then use the agent via the side panel, @mention in a channel, or DM.
 
 ## Usage

@@ -9,7 +9,7 @@ from slack_sdk.oauth.state_store import FileOAuthStateStore
 
 from listeners import register_listeners
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper())
 
 
 # Callback to run on successful installation
@@ -36,6 +36,7 @@ app = App(
             "assistant:write",
             "im:history",
             "chat:write",
+            "files:read",
             "channels:join",  # required only for the channel summary
             "channels:history",  # required only for the channel summary
             "groups:history",  # required only for the channel summary

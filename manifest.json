@@ -24,7 +24,8 @@
         "app_mentions:read",
         "assistant:write",
         "im:history",
-        "chat:write"
+        "chat:write",
+        "files:read"
       ]
     }
   },
