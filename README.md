@@ -15,7 +15,7 @@
 
 ## Quick start
 
-**Prerequisites:** Python 3.10+, Slack workspace (admin), [Google API key](https://aistudio.google.com/app/api-keys) with Gemini.
+**Prerequisites:** [uv](https://docs.astral.sh/uv/getting-started/installation/), Slack workspace (admin), [Google API key](https://aistudio.google.com/app/api-keys) with Gemini.
 
 ```bash
 git clone https://github.com/jonigl/sladk-agents.git
@@ -24,17 +24,17 @@ cp .env.sample .env
 # Edit .env: SLACK_APP_TOKEN, SLACK_BOT_TOKEN, GOOGLE_API_KEY, AGENT_MODEL (e.g. gemini-2.5-flash)
 cp AGENTS.md.sample AGENTS.md
 # Edit AGENTS.md to define your agent's persona (optional — a default is used if omitted)
-python3 -m venv .venv
-source .venv/bin/activate   # or .venv\Scripts\activate on Windows
-pip install -r requirements.txt
+uv sync
 ```
+
+> `uv` manages the virtual environment and dependencies automatically — no manual `venv` or `pip install` needed.
 
 **Slack app:** [Create an app](https://api.slack.com/apps/new) from manifest → paste `manifest.json` → Install to workspace. See [SLACK_BOLT_TEMPLATE_README.md](SLACK_BOLT_TEMPLATE_README.md#creating-the-slack-app) if you need step-by-step.
 
 **Run:**
 
 ```bash
-python3 app.py
+uv run python app.py
 ```
 
 Or using Slack CLI:
