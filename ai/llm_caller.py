@@ -42,6 +42,9 @@ async def call_llm(
     session_id: str = None,
 ) -> AsyncIterator[str]:
     """Call the LLM and yield text chunks asynchronously."""
+    if not user_prompt:
+        return
+
     effective_instruction = (
         f"{system_instruction}\n\n"
         "Response length guidance:\n"
@@ -114,9 +117,6 @@ async def call_llm(
         app=app,
         session_service=session_service,
     )
-
-    if not user_prompt:
-        return
 
     msg = Content(role="user", parts=[Part(text=user_prompt)])
 
