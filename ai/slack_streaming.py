@@ -46,6 +46,12 @@ async def stream_llm_to_slack(
         pending = text_chunk
         while pending:
             bounded, overflow = clamp_to_stream_budget(pending, streamed_chars)
+            # Guard: if the budget allows nothing (allowed==0) but pending is
+            # non-empty, the loop would spin forever because `pending` never
+            # shrinks.  Force at least one character through so progress is
+            # always guaranteed (can occur when max_total_chars <= reserve_chars).
+            if not bounded and overflow:
+                bounded = pending[:1]
             if bounded:
                 await streamer.append(markdown_text=bounded)
                 streamed_chars += len(bounded)
