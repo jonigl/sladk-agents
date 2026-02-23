@@ -4,7 +4,10 @@ from typing import Optional
 from slack_bolt.async_app import AsyncSay
 from slack_sdk.web.async_client import AsyncWebClient
 
-from ai.file_ingestion import enrich_text_with_attachments, ingest_latest_message_attachments
+from ai.file_ingestion import (
+    enrich_text_with_attachments,
+    ingest_latest_message_attachments,
+)
 from ai.llm_caller import call_llm
 from ai.slack_streaming import stream_llm_to_slack
 from .views.feedback_block import create_feedback_block

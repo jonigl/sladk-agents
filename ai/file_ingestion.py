@@ -94,7 +94,9 @@ async def _process_single_attachment(
 
     try:
         payload = await downloader(url, slack_token)
-        extracted = extract_pdf_text(payload) if file_kind == "pdf" else _decode_text(payload)
+        extracted = (
+            extract_pdf_text(payload) if file_kind == "pdf" else _decode_text(payload)
+        )
 
         if not extracted:
             return None, f"Skipped {filename}: no readable text content found.", 0
