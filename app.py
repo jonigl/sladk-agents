@@ -13,9 +13,10 @@ from listeners import register_listeners
 # Load environment variables
 load_dotenv(dotenv_path=".env", override=False)
 
-# Initialization
+# Set up logging
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper())
 
+# Initialization
 app = AsyncApp(
     token=os.environ.get("SLACK_BOT_TOKEN"),
     client=AsyncWebClient(

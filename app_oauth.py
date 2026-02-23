@@ -9,6 +9,7 @@ from slack_sdk.oauth.state_store import FileOAuthStateStore
 
 from listeners import register_listeners
 
+# Set up logging
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper())
 
 
