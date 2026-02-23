@@ -42,32 +42,39 @@ async def stream_llm_to_slack(
     )
     streamed_chars = 0
 
-    async for text_chunk in llm_chunks:
-        pending = text_chunk
-        while pending:
-            bounded, overflow = clamp_to_stream_budget(pending, streamed_chars)
-            # Guard: if the budget allows nothing (allowed==0) but pending is
-            # non-empty, the loop would spin forever because `pending` never
-            # shrinks.  Force at least one character through so progress is
-            # always guaranteed (can occur when max_total_chars <= reserve_chars).
-            if not bounded and overflow:
-                bounded = pending[:1]
-            if bounded:
-                await streamer.append(markdown_text=bounded)
-                streamed_chars += len(bounded)
-                pending = pending[len(bounded) :]
-            if not overflow:
-                break
-            # Budget exhausted — append continuation notice then open a new message.
-            await streamer.append(markdown_text=_CONTINUATION_NOTICE)
+    try:
+        async for text_chunk in llm_chunks:
+            pending = text_chunk
+            while pending:
+                bounded, overflow = clamp_to_stream_budget(pending, streamed_chars)
+                # Guard: if the budget allows nothing (allowed==0) but pending is
+                # non-empty, the loop would spin forever because `pending` never
+                # shrinks.  Force at least one character through so progress is
+                # always guaranteed (can occur when max_total_chars <= reserve_chars).
+                if not bounded and overflow:
+                    bounded = pending[:1]
+                if bounded:
+                    await streamer.append(markdown_text=bounded)
+                    streamed_chars += len(bounded)
+                    pending = pending[len(bounded) :]
+                if not overflow:
+                    break
+                # Budget exhausted — append continuation notice then open a new message.
+                await streamer.append(markdown_text=_CONTINUATION_NOTICE)
+                await streamer.stop()
+                streamer = await client.chat_stream(
+                    channel=channel_id,
+                    recipient_team_id=team_id,
+                    recipient_user_id=user_id,
+                    thread_ts=thread_ts,
+                    buffer_size=_CHUNK_BUFFER,
+                )
+                streamed_chars = 0
+    except Exception:
+        try:
             await streamer.stop()
-            streamer = await client.chat_stream(
-                channel=channel_id,
-                recipient_team_id=team_id,
-                recipient_user_id=user_id,
-                thread_ts=thread_ts,
-                buffer_size=_CHUNK_BUFFER,
-            )
-            streamed_chars = 0
+        except Exception:
+            pass
+        raise
 
     await streamer.stop(blocks=feedback_blocks)
