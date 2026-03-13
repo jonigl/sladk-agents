@@ -2848,9 +2848,9 @@ requires-dist = [
     { name = "google-adk", specifier = ">=1.19.0" },
     { name = "pypdf", specifier = ">=6.7.1" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
-    { name = "slack-bolt", specifier = ">=1.26.0" },
+    { name = "slack-bolt", specifier = ">=1.27.0" },
     { name = "slack-cli-hooks", specifier = ">=0.2.0" },
-    { name = "slack-sdk", specifier = ">=3.37.0" },
+    { name = "slack-sdk", specifier = ">=3.40.0" },
 ]
 
 [package.metadata.requires-dev]

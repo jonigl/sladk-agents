@@ -23,6 +23,7 @@ async def process_and_stream_message(
     user_id: Optional[str],
     text: str,
     files: list,
+    task_display_mode: str = "timeline",
 ):
     if not all([channel_id, team_id, user_id, thread_ts]):
         logger.error(
@@ -60,6 +61,7 @@ async def process_and_stream_message(
             thread_ts=thread_ts,
             llm_chunks=call_llm(enriched_text, user_id=user_id, session_id=thread_ts),
             feedback_blocks=create_feedback_block(),
+            task_display_mode=task_display_mode,
         )
 
     except Exception as e:
