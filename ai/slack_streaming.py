@@ -36,6 +36,7 @@ def _output_text(response: dict) -> str | None:
         value = response
     return str(value) if value else None
 
+
 # Internal protocol constants — not exposed as env vars since users
 # don't need to tune Slack streaming details independently.
 _CHUNK_BUFFER = 500  # SDK buffer_size: flushes when accumulated text >= this
@@ -135,7 +136,7 @@ async def stream_llm_to_slack(
                     if bounded:
                         await streamer.append(markdown_text=bounded)
                         streamed_chars += len(bounded)
-                        pending = pending[len(bounded):]
+                        pending = pending[len(bounded) :]
                     if not overflow:
                         break
                     # Budget exhausted — append continuation notice then open a new message.

@@ -18,6 +18,7 @@ def get_weather(city: str) -> str:
     except Exception:
         return "Error fetching weather data"
 
+
 def get_current_time(timezone: str = "UTC") -> str:
     """
     Get the current time in a given timezone.
@@ -43,6 +44,7 @@ def get_current_time(timezone: str = "UTC") -> str:
         return now.strftime(f"%Y-%m-%d %H:%M:%S {abbrev} ({offset_str})")
     except zoneinfo.ZoneInfoNotFoundError:
         from datetime import timezone as _tz
+
         now_utc = datetime.now(_tz.utc)
         return (
             now_utc.strftime("%Y-%m-%d %H:%M:%S UTC")
