@@ -17,7 +17,7 @@ from google.genai.types import (
     HarmBlockThreshold,
     Part,
 )
-from ai.tools.custom_tools import get_weather
+from ai.tools.custom_tools import get_weather, get_current_time
 from ai.utils import load_system_instruction
 
 logger = logging.getLogger(__name__)
@@ -40,8 +40,14 @@ async def call_llm(
     system_instruction: str = DEFAULT_SYSTEM_INSTRUCTION,
     user_id: str = "default_user",
     session_id: str = None,
-) -> AsyncIterator[str]:
-    """Call the LLM and yield text chunks asynchronously."""
+) -> AsyncIterator[dict]:
+    """Call the LLM and yield structured event dicts asynchronously.
+
+    Yields dicts with a ``type`` key:
+      - ``{"type": "text", "content": str}``
+      - ``{"type": "tool_start", "name": str, "id": str}``
+      - ``{"type": "tool_done",  "name": str, "id": str}``
+    """
     if not user_prompt:
         return
 
@@ -85,6 +91,7 @@ async def call_llm(
         generate_content_config=generation_config,
         tools=[
             get_weather,
+            get_current_time,
             AgentTool(agent=search_agent),
             AgentTool(agent=coding_agent),
         ],
@@ -127,7 +134,23 @@ async def call_llm(
     ):
         if event.content and event.content.parts:
             for part in event.content.parts:
-                if hasattr(part, "text") and part.text:
-                    yield part.text
+                if hasattr(part, "function_call") and part.function_call:
+                    fc = part.function_call
+                    yield {
+                        "type": "tool_start",
+                        "name": fc.name,
+                        "id": fc.id or fc.name,
+                        "args": dict(fc.args) if fc.args else {},
+                    }
+                elif hasattr(part, "function_response") and part.function_response:
+                    fr = part.function_response
+                    yield {
+                        "type": "tool_done",
+                        "name": fr.name,
+                        "id": fr.id or fr.name,
+                        "response": dict(fr.response) if fr.response else {},
+                    }
+                elif hasattr(part, "text") and part.text:
+                    yield {"type": "text", "content": part.text}
         if event.is_final_response():
             break

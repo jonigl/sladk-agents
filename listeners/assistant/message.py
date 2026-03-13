@@ -23,6 +23,12 @@ async def message(
         payload: Event payload with message details (channel, user, text, etc.)
         say: Function to send messages to the thread
     """
+    # Use the "plan" display mode for the weather prompt since it always
+    # calls the get_weather tool, making the plan layout visible and meaningful.
+    # All other messages default to the "timeline" layout.
+    text = payload.get("text", "")
+    task_display_mode = "plan" if "weather" in text.lower() else "timeline"
+
     await process_and_stream_message(
         client=client,
         logger=logger,
@@ -31,6 +37,7 @@ async def message(
         thread_ts=payload.get("thread_ts"),
         team_id=context.team_id,
         user_id=context.user_id,
-        text=payload.get("text", ""),
+        text=text,
         files=payload.get("files") or [],
+        task_display_mode=task_display_mode,
     )

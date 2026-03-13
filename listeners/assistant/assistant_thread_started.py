@@ -1,6 +1,4 @@
 from logging import Logger
-from typing import Dict, List
-
 from slack_bolt.async_app import AsyncSay, AsyncSetSuggestedPrompts
 
 
@@ -20,22 +18,22 @@ async def assistant_thread_started(
     try:
         await say("How can I help you?")
 
-        prompts: List[Dict[str, str]] = [
-            {
-                "title": "What does Slack stand for?",
-                "message": "Slack, a business communication service, was named after an acronym. Can you guess what it stands for?",
-            },
-            {
-                "title": "What Google ADK is?",
-                "message": "Google Agents Development Kit (ADK) is a framework for building AI agents that can interact with various Google services. Can you explain how Google ADK works and its main features?",
-            },
-            {
-                "title": "What Sladk Agents is? ",
-                "message": "Sladk Agents is a project that integrates Slack AI Agents with Google Agents Development Kit (ADK). What could be the benefits of using Sladk Agents in a workspace?",
-            },
-        ]
-
-        await set_suggested_prompts(prompts=prompts)
+        await set_suggested_prompts(
+            prompts=[
+                {
+                    "title": "Check the weather in Tokyo and Miami (plan view)",
+                    "message": "What's the weather like in Tokyo and Miami right now?",
+                },
+                {
+                    "title": "Latest news about AI (timeline view)",
+                    "message": "Search for latest news about AI.",
+                },
+                {
+                    "title": "What Sladk Agents is? ",
+                    "message": "Sladk Agents is a project that integrates Slack AI Agents with Google Agents Development Kit (ADK). What could be the benefits of using Sladk Agents in a workspace?",
+                },
+            ]
+        )
     except Exception as e:
         logger.exception(f"Failed to handle an assistant_thread_started event: {e}")
         await say(f":warning: Something went wrong! ({e})")
