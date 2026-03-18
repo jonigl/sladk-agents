@@ -15,7 +15,9 @@ def get_weather(city: str) -> str:
         # Step 1: Geocode city → lat/lon
         geo_url = (
             "https://geocoding-api.open-meteo.com/v1/search?"
-            + urllib.parse.urlencode({"name": city, "count": 1, "language": "en", "format": "json"})
+            + urllib.parse.urlencode(
+                {"name": city, "count": 1, "language": "en", "format": "json"}
+            )
         )
         with urllib.request.urlopen(geo_url, timeout=10) as geo_resp:
             geo_data = json.loads(geo_resp.read().decode("utf-8"))
@@ -27,12 +29,14 @@ def get_weather(city: str) -> str:
         # Step 2: Fetch current weather
         weather_url = (
             "https://api.open-meteo.com/v1/forecast?"
-            + urllib.parse.urlencode({
-                "latitude": lat,
-                "longitude": lon,
-                "current_weather": "true",
-                "temperature_unit": "celsius",
-            })
+            + urllib.parse.urlencode(
+                {
+                    "latitude": lat,
+                    "longitude": lon,
+                    "current_weather": "true",
+                    "temperature_unit": "celsius",
+                }
+            )
         )
         weather_data = json.loads(urllib.request.urlopen(weather_url).read())
         current = weather_data["current_weather"]
