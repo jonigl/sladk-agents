@@ -17,7 +17,8 @@ def get_weather(city: str) -> str:
             "https://geocoding-api.open-meteo.com/v1/search?"
             + urllib.parse.urlencode({"name": city, "count": 1, "language": "en", "format": "json"})
         )
-        geo_data = json.loads(urllib.request.urlopen(geo_url).read())
+        with urllib.request.urlopen(geo_url, timeout=10) as geo_resp:
+            geo_data = json.loads(geo_resp.read().decode("utf-8"))
         if not geo_data.get("results"):
             return f"City '{city}' not found"
         lat = geo_data["results"][0]["latitude"]
