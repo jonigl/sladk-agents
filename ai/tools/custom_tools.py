@@ -5,11 +5,11 @@ import json
 
 def get_weather(city: str) -> str:
     """
-    Get the current weather for a given city using Open-Meteo (no API key required).
+    Get the current weather for a given city using Open-Meteo
     Args:
       city (str): The name of the city
     Returns:
-      str: The current weather in the city, for example, "Partly cloudy +20°C"
+      str: The current weather, for example "WMO code 3, 15°C" (WMO code representing weather conditions)
     """
     try:
         # Step 1: Geocode city → lat/lon
