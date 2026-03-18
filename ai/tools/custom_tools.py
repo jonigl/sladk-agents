@@ -1,20 +1,43 @@
 import urllib.request
 import urllib.parse
+import json
 
 
 def get_weather(city: str) -> str:
     """
-    Get the current weather for a given city
+    Get the current weather for a given city using Open-Meteo (no API key required).
     Args:
       city (str): The name of the city
     Returns:
-      str: The current weather in the city, for example, "Sunny +20°C"
+      str: The current weather in the city, for example, "Partly cloudy +20°C"
     """
     try:
-        url_encoded_city = urllib.parse.quote_plus(city)
-        wttr_url = f"https://wttr.in/{url_encoded_city}?format=%C+%t"
-        response = urllib.request.urlopen(wttr_url).read()
-        return response.decode("utf-8")
+        # Step 1: Geocode city → lat/lon
+        geo_url = (
+            "https://geocoding-api.open-meteo.com/v1/search?"
+            + urllib.parse.urlencode({"name": city, "count": 1, "language": "en", "format": "json"})
+        )
+        geo_data = json.loads(urllib.request.urlopen(geo_url).read())
+        if not geo_data.get("results"):
+            return f"City '{city}' not found"
+        lat = geo_data["results"][0]["latitude"]
+        lon = geo_data["results"][0]["longitude"]
+
+        # Step 2: Fetch current weather
+        weather_url = (
+            "https://api.open-meteo.com/v1/forecast?"
+            + urllib.parse.urlencode({
+                "latitude": lat,
+                "longitude": lon,
+                "current_weather": "true",
+                "temperature_unit": "celsius",
+            })
+        )
+        weather_data = json.loads(urllib.request.urlopen(weather_url).read())
+        current = weather_data["current_weather"]
+        temp = current["temperature"]
+        code = current["weathercode"]
+        return f"WMO code {code}, {temp}°C"
     except Exception:
         return "Error fetching weather data"
 
