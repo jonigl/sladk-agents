@@ -125,7 +125,9 @@ def load_mcp_toolsets_from_file(config_path: str) -> List[McpToolset]:
     toolsets: List[McpToolset] = []
     for name, config in servers.items():
         if not isinstance(config, dict):
-            logger.error("[FAIL] Failed to load MCP server '%s': config must be an object", name)
+            logger.error(
+                "[FAIL] Failed to load MCP server '%s': config must be an object", name
+            )
             continue
         try:
             toolsets.append(create_toolset_from_config(name=name, config=config))

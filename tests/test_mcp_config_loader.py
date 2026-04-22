@@ -62,8 +62,12 @@ class TestExpandConfigValues:
 
 class TestCreateToolsetFromConfig:
     def _patch_classes(self, monkeypatch):
-        monkeypatch.setattr(mcp_loader, "StdioServerParameters", DummyStdioServerParameters)
-        monkeypatch.setattr(mcp_loader, "StdioConnectionParams", DummyStdioConnectionParams)
+        monkeypatch.setattr(
+            mcp_loader, "StdioServerParameters", DummyStdioServerParameters
+        )
+        monkeypatch.setattr(
+            mcp_loader, "StdioConnectionParams", DummyStdioConnectionParams
+        )
         monkeypatch.setattr(mcp_loader, "SseConnectionParams", DummySseConnectionParams)
         monkeypatch.setattr(
             mcp_loader,
