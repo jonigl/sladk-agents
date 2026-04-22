@@ -9,8 +9,38 @@ def get_weather(city: str) -> str:
     Args:
       city (str): The name of the city
     Returns:
-      str: The current weather, for example "WMO code 3, 15°C" (WMO code representing weather conditions)
+      str: The current weather condition and temperature, e.g. "Partly cloudy, 15°C"
     """
+    WMO_DESCRIPTIONS = {
+        0: "Clear sky",
+        1: "Mainly clear",
+        2: "Partly cloudy",
+        3: "Overcast",
+        45: "Foggy",
+        48: "Depositing rime fog",
+        51: "Light drizzle",
+        53: "Moderate drizzle",
+        55: "Dense drizzle",
+        56: "Light freezing drizzle",
+        57: "Dense freezing drizzle",
+        61: "Slight rain",
+        63: "Moderate rain",
+        65: "Heavy rain",
+        66: "Light freezing rain",
+        67: "Heavy freezing rain",
+        71: "Slight snowfall",
+        73: "Moderate snowfall",
+        75: "Heavy snowfall",
+        77: "Snow grains",
+        80: "Slight rain showers",
+        81: "Moderate rain showers",
+        82: "Violent rain showers",
+        85: "Slight snow showers",
+        86: "Heavy snow showers",
+        95: "Thunderstorm",
+        96: "Thunderstorm with slight hail",
+        99: "Thunderstorm with heavy hail",
+    }
     try:
         # Step 1: Geocode city → lat/lon
         geo_url = (
@@ -42,7 +72,8 @@ def get_weather(city: str) -> str:
         current = weather_data["current_weather"]
         temp = current["temperature"]
         code = current["weathercode"]
-        return f"WMO code {code}, {temp}°C"
+        condition = WMO_DESCRIPTIONS.get(code, f"Unknown (code {code})")
+        return f"{condition}, {temp}°C"
     except Exception:
         return "Error fetching weather data"
 
