@@ -110,9 +110,62 @@ from ai.tools.custom_tools import get_weather, my_tool
 tools=[get_weather, my_tool, AgentTool(agent=search_agent), ...]
 ```
 
+### MCP servers via JSON config
+
+You can add MCP (Model Context Protocol) tools without changing Python code by creating `mcpServers.json` in the project root.
+
+```bash
+cp mcpServers.json.sample mcpServers.json
+# Edit mcpServers.json with your MCP servers
+```
+
+Supported server config shape (`mcpServers` object):
+
+- `command` + optional `args`/`env` -> local stdio MCP server
+- `url` ending in `/sse` -> SSE MCP server
+- any other `url` (including `/mcp`) -> Streamable HTTP MCP server
+
+Supported placeholders in all string values:
+
+- `${env:VAR_NAME}` -> environment variable value (empty string if unset)
+- `${workspaceFolder}` -> current working directory
+
+Example:
+
+```json
+{
+    "mcpServers": {
+        "local-filesystem": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"],
+            "tool_filter": ["read_file", "list_directory"]
+        },
+        "remote-mcp": {
+            "url": "https://example.com/mcp",
+            "headers": {
+                "Authorization": "Bearer ${env:MCP_AUTH_TOKEN}"
+            }
+        },
+        "remote-sse": {
+            "url": "https://example.com/sse",
+            "headers": {
+                "Authorization": "Bearer ${env:MCP_AUTH_TOKEN}"
+            }
+        }
+    }
+}
+```
+
+Notes:
+
+- MCP toolsets are loaded once at startup from `MCP_CONFIG_PATH` (default: `mcpServers.json`).
+- If the config file is missing, the app starts normally without MCP tools.
+- If one MCP server fails to load, the others still load.
+- MCP toolsets are closed during app shutdown.
+
 ## Architecture (high level)
 
-Slack (UI) → **Bolt app** (Socket Mode, listeners) → **Google ADK** (LlmAgent + sub-agents + tools, session store) → **Gemini API**. Each Slack thread maps to one ADK session; responses are streamed back.
+Slack (UI) → **Bolt app** (Socket Mode, listeners) → **Google ADK** (LlmAgent + sub-agents + local tools + MCP tools, session store) → **Gemini API**. Each Slack thread maps to one ADK session; responses are streamed back.
 
 ## Demos
 
@@ -126,8 +179,8 @@ Slack (UI) → **Bolt app** (Socket Mode, listeners) → **Google ADK** (LlmAgen
 
 ## Roadmap
 
+- [x] MCP (Model Context Protocol) tools
 - [ ] Memory Bank across sessions
-- [ ] MCP (Model Context Protocol) tools
 - [ ] Agent Engine / Cloud Run deployment
 - [ ] Observability (e.g. OpenTelemetry)
 - [ ] A2A protocol for multi-agent workflows

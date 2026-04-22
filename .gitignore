@@ -1,4 +1,5 @@
 # general things to ignore
+agents/
 build/
 dist/
 docs/_sources/
@@ -37,6 +38,7 @@ tmp.txt
 logs/
 *.db
 AGENTS.md
+mcpServers.json
 .pytype/
 .idea/
 

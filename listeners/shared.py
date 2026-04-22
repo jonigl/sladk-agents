@@ -45,11 +45,12 @@ async def process_and_stream_message(
             thread_ts=thread_ts,
             status="thinking...",
             loading_messages=[
-                "Teaching the hamsters to type faster…",
-                "Untangling the internet cables…",
-                "Consulting the office goldfish…",
-                "Polishing up the response just for you…",
-                "Convincing the AI to stop overthinking…",
+                "Rolling back the rollback of the rollback…",
+                "It works on my machine, shipping my laptop…",
+                "Blaming DNS… it's always DNS…",
+                "Restarting the pod that restarts the pods…",
+                "Updating the YAML that updates the YAML…",
+                "Deploying on Friday… what could go wrong…",
             ],
         )
 

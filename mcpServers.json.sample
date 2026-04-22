@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "local-filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "${workspaceFolder}"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "tool_filter": [
+        "read_file",
+        "list_directory"
+      ]
+    },
+    "remote-streamable": {
+      "url": "https://example.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:MCP_AUTH_TOKEN}"
+      }
+    },
+    "remote-sse": {
+      "url": "https://example.com/sse",
+      "headers": {
+        "Authorization": "Bearer ${env:MCP_AUTH_TOKEN}"
+      }
+    }
+  }
+}
