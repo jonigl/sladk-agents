@@ -18,6 +18,7 @@ from google.genai.types import (
     Part,
 )
 from ai.tools.custom_tools import get_weather, get_current_time
+from ai.mcp_config_loader import load_mcp_toolsets_from_file
 from ai.utils import load_system_instruction
 
 logger = logging.getLogger(__name__)
@@ -27,12 +28,14 @@ AGENT_NAME = os.getenv("AGENT_NAME", "Sladk_AI_Agent")
 AGENT_MODEL = os.getenv("AGENT_MODEL", "gemini-2.5-flash")
 AGENT_MAX_OUTPUT_TOKENS = int(os.getenv("AGENT_MAX_OUTPUT_TOKENS", "0"))
 AGENT_TARGET_OUTPUT_CHARS = int(os.getenv("AGENT_TARGET_OUTPUT_CHARS", "9000"))
+MCP_CONFIG_PATH = os.getenv("MCP_CONFIG_PATH", "mcpServers.json")
 
 DEFAULT_SYSTEM_INSTRUCTION = load_system_instruction()
 
 
 # Global services
 session_service = InMemorySessionService()
+mcp_toolsets = load_mcp_toolsets_from_file(MCP_CONFIG_PATH)
 
 
 async def call_llm(
@@ -94,6 +97,7 @@ async def call_llm(
             get_current_time,
             AgentTool(agent=search_agent),
             AgentTool(agent=coding_agent),
+            *mcp_toolsets,
         ],
     )
 

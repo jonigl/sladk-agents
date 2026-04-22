@@ -1,5 +1,6 @@
 import logging
 import os
+import asyncio
 
 from slack_bolt import App, BoltResponse
 from slack_bolt.oauth.callback_options import CallbackOptions, FailureArgs, SuccessArgs
@@ -8,6 +9,8 @@ from slack_sdk.oauth.installation_store import FileInstallationStore
 from slack_sdk.oauth.state_store import FileOAuthStateStore
 
 from listeners import register_listeners
+from ai.llm_caller import mcp_toolsets
+from ai.mcp_config_loader import close_mcp_toolsets
 
 # Set up logging
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper())
@@ -56,4 +59,7 @@ register_listeners(app)
 
 # Start Bolt app
 if __name__ == "__main__":
-    app.start(3000)
+    try:
+        app.start(3000)
+    finally:
+        asyncio.run(close_mcp_toolsets(mcp_toolsets))

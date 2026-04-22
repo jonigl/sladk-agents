@@ -9,6 +9,8 @@ from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
 from slack_sdk.web.async_client import AsyncWebClient
 
 from listeners import register_listeners
+from ai.llm_caller import mcp_toolsets
+from ai.mcp_config_loader import close_mcp_toolsets
 
 # Load environment variables
 load_dotenv(dotenv_path=".env", override=False)
@@ -31,7 +33,10 @@ register_listeners(app)
 
 async def main():
     handler = AsyncSocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN"))
-    await handler.start_async()
+    try:
+        await handler.start_async()
+    finally:
+        await close_mcp_toolsets(mcp_toolsets)
 
 
 # Start Bolt app
